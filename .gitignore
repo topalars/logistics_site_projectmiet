@@ -1,1 +1,1 @@
-Nothing should be ignored based on the provided file changes. The changes include only source/config files (.html, .md) without any build artifacts, dependencies, or temporary files that would warrant adding to .gitignore.
+(research/wms-prd.md is a markdown documentation file, which is source content that should be tracked in version control, so no .gitignore rules are needed)
