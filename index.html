@@ -1,10 +1,463 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WMS - Система управления складом</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <div class="app-container">
+        <!-- Боковое меню -->
+        <aside class="sidebar">
+            <div class="logo">
+                <h1>📦 WMS Pro</h1>
+                <p>Складская система</p>
+            </div>
+            <nav class="menu">
+                <a href="#" class="menu-item active" data-section="dashboard">
+                    <span class="icon">📊</span>
+                    <span>Дашборд</span>
+                </a>
+                <a href="#" class="menu-item" data-section="receiving">
+                    <span class="icon">📥</span>
+                    <span>Приёмка</span>
+                </a>
+                <a href="#" class="menu-item" data-section="storage">
+                    <span class="icon">🏗️</span>
+                    <span>Хранение</span>
+                </a>
+                <a href="#" class="menu-item" data-section="picking">
+                    <span class="icon">🛒</span>
+                    <span>Комплектация</span>
+                </a>
+                <a href="#" class="menu-item" data-section="shipping">
+                    <span class="icon">📤</span>
+                    <span>Отгрузка</span>
+                </a>
+                <a href="#" class="menu-item" data-section="inventory">
+                    <span class="icon">📋</span>
+                    <span>Товары</span>
+                </a>
+                <a href="#" class="menu-item" data-section="analytics">
+                    <span class="icon">📈</span>
+                    <span>Аналитика</span>
+                </a>
+            </nav>
+            <div class="warehouse-status">
+                <h4>Статус склада</h4>
+                <div class="status-indicator online">● Онлайн</div>
+                <p id="current-date"></p>
+            </div>
+        </aside>
 
+        <!-- Основной контент -->
+        <main class="main-content">
+            <!-- Шапка -->
+            <header class="top-bar">
+                <div class="search-box">
+                    <input type="text" placeholder="Поиск по штрих-коду, артикулу...">
+                    <button>🔍</button>
+                </div>
+                <div class="user-info">
+                    <div class="notifications">
+                        <span class="badge">3</span>
+                        🔔
+                    </div>
+                    <div class="user-profile">
+                        <span class="avatar">👤</span>
+                        <span class="name">Администратор</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Секции -->
+            <div class="content-wrapper">
+                <!-- Дашборд -->
+                <section id="dashboard" class="section active">
+                    <h2>Обзор склада</h2>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">📦</div>
+                            <div class="stat-info">
+                                <h3 id="total-products">0</h3>
+                                <p>Всего товаров</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">🏗️</div>
+                            <div class="stat-info">
+                                <h3 id="occupied-cells">0/0</h3>
+                                <p>Заполненность ячеек</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">📥</div>
+                            <div class="stat-info">
+                                <h3 id="pending-receiving">0</h3>
+                                <p>Ожидает приёмки</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">🛒</div>
+                            <div class="stat-info">
+                                <h3 id="orders-pending">0</h3>
+                                <p>Заказов в работе</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-charts">
+                        <div class="chart-card">
+                            <h3>Заполненность зон</h3>
+                            <div class="zones-progress">
+                                <div class="zone-item">
+                                    <span>Приёмка</span>
+                                    <div class="progress-bar"><div class="progress" style="width: 45%"></div></div>
+                                    <span>45%</span>
+                                </div>
+                                <div class="zone-item">
+                                    <span>Хранение</span>
+                                    <div class="progress-bar"><div class="progress" style="width: 78%"></div></div>
+                                    <span>78%</span>
+                                </div>
+                                <div class="zone-item">
+                                    <span>Комплектация</span>
+                                    <div class="progress-bar"><div class="progress" style="width: 62%"></div></div>
+                                    <span>62%</span>
+                                </div>
+                                <div class="zone-item">
+                                    <span>Отгрузка</span>
+                                    <div class="progress-bar"><div class="progress" style="width: 30%"></div></div>
+                                    <span>30%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chart-card">
+                            <h3>Активность за сегодня</h3>
+                            <canvas id="activity-chart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="recent-operations">
+                        <h3>Последние операции</h3>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Время</th>
+                                    <th>Тип</th>
+                                    <th>Товар</th>
+                                    <th>Ячейка</th>
+                                    <th>Статус</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recent-operations-body">
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Приёмка -->
+                <section id="receiving" class="section">
+                    <h2>Приёмка товаров</h2>
+                    <div class="action-panel">
+                        <button class="btn btn-primary" onclick="openModal('receiving-modal')">+ Новая поставка</button>
+                        <button class="btn btn-secondary" onclick="scanBarcode()">📷 Сканировать</button>
+                    </div>
+                    <div class="data-filters">
+                        <input type="text" placeholder="Поиск поставки..." class="filter-input">
+                        <select class="filter-select">
+                            <option>Все статусы</option>
+                            <option>В ожидании</option>
+                            <option>В процессе</option>
+                            <option>Завершено</option>
+                        </select>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Поставщик</th>
+                                <th>Дата</th>
+                                <th>Товаров</th>
+                                <th>Статус</th>
+                                <th>Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody id="receiving-table-body">
+                        </tbody>
+                    </table>
+                </section>
+
+                <!-- Хранение -->
+                <section id="storage" class="section">
+                    <h2>Карта склада</h2>
+                    <div class="warehouse-map">
+                        <div class="map-legend">
+                            <div class="legend-item"><span class="dot free"></span> Свободно</div>
+                            <div class="legend-item"><span class="dot occupied"></span> Занято</div>
+                            <div class="legend-item"><span class="dot reserved"></span> Резерв</div>
+                        </div>
+                        <div class="zones-container">
+                            <div class="zone" data-zone="A">
+                                <h4>Зона A</h4>
+                                <div class="cells-grid" id="zone-a-cells"></div>
+                            </div>
+                            <div class="zone" data-zone="B">
+                                <h4>Зона B</h4>
+                                <div class="cells-grid" id="zone-b-cells"></div>
+                            </div>
+                            <div class="zone" data-zone="C">
+                                <h4>Зона C</h4>
+                                <div class="cells-grid" id="zone-c-cells"></div>
+                            </div>
+                            <div class="zone" data-zone="D">
+                                <h4>Зона D</h4>
+                                <div class="cells-grid" id="zone-d-cells"></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Комплектация -->
+                <section id="picking" class="section">
+                    <h2>Комплектация заказов</h2>
+                    <div class="action-panel">
+                        <button class="btn btn-primary" onclick="openModal('order-modal')">+ Новый заказ</button>
+                    </div>
+                    <div class="picking-tasks">
+                        <div class="task-card priority-high">
+                            <div class="task-header">
+                                <span class="task-id">#ORD-001</span>
+                                <span class="priority-badge">Высокий</span>
+                            </div>
+                            <div class="task-items">
+                                <div class="task-item">
+                                    <span class="item-sku">SKU-12345</span>
+                                    <span class="item-name">Смартфон XYZ</span>
+                                    <span class="item-qty">2 шт</span>
+                                    <span class="item-location">A-12-3</span>
+                                </div>
+                            </div>
+                            <div class="task-actions">
+                                <button class="btn btn-sm">Начать</button>
+                                <button class="btn btn-sm btn-secondary">Отложить</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Отгрузка -->
+                <section id="shipping" class="section">
+                    <h2>Отгрузка</h2>
+                    <div class="shipping-zones">
+                        <div class="shipping-zone">
+                            <h3>Зона отгрузки 1</h3>
+                            <div class="packages-list" id="shipping-zone-1">
+                            </div>
+                        </div>
+                        <div class="shipping-zone">
+                            <h3>Зона отгрузки 2</h3>
+                            <div class="packages-list" id="shipping-zone-2">
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Товары -->
+                <section id="inventory" class="section">
+                    <h2>Каталог товаров</h2>
+                    <div class="action-panel">
+                        <button class="btn btn-primary" onclick="openModal('product-modal')">+ Добавить товар</button>
+                        <button class="btn btn-secondary">📥 Импорт</button>
+                        <button class="btn btn-secondary">📤 Экспорт</button>
+                    </div>
+                    <div class="data-filters">
+                        <input type="text" placeholder="Поиск товара..." class="filter-input" id="product-search">
+                        <select class="filter-select" id="category-filter">
+                            <option value="">Все категории</option>
+                            <option>Электроника</option>
+                            <option>Одежда</option>
+                            <option>Дом и сад</option>
+                        </select>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Артикул</th>
+                                <th>Название</th>
+                                <th>Категория</th>
+                                <th>Остаток</th>
+                                <th>Ячейки</th>
+                                <th>Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventory-table-body">
+                        </tbody>
+                    </table>
+                </section>
+
+                <!-- Аналитика -->
+                <section id="analytics" class="section">
+                    <h2>Аналитика склада</h2>
+                    <div class="analytics-period">
+                        <button class="btn btn-sm active">День</button>
+                        <button class="btn btn-sm">Неделя</button>
+                        <button class="btn btn-sm">Месяц</button>
+                    </div>
+                    <div class="analytics-grid">
+                        <div class="analytics-card">
+                            <h3>Оборот товаров</h3>
+                            <canvas id="turnover-chart"></canvas>
+                        </div>
+                        <div class="analytics-card">
+                            <h3>Топ товаров</h3>
+                            <div id="top-products"></div>
+                        </div>
+                        <div class="analytics-card">
+                            <h3>Эффективность зон</h3>
+                            <canvas id="efficiency-chart"></canvas>
+                        </div>
+                        <div class="analytics-card">
+                            <h3>KPI склада</h3>
+                            <div class="kpi-grid">
+                                <div class="kpi-item">
+                                    <span class="kpi-value">98.5%</span>
+                                    <span class="kpi-label">Точность учёта</span>
+                                </div>
+                                <div class="kpi-item">
+                                    <span class="kpi-value">2.3 ч</span>
+                                    <span class="kpi-label">Среднее время сборки</span>
+                                </div>
+                                <div class="kpi-item">
+                                    <span class="kpi-value">99.2%</span>
+                                    <span class="kpi-label">Своевременность</span>
+                                </div>
+                                <div class="kpi-item">
+                                    <span class="kpi-value">156</span>
+                                    <span class="kpi-label">Заказов/день</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Модальные окна -->
+    <div id="receiving-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('receiving-modal')">&times;</span>
+            <h3>Новая поставка</h3>
+            <form id="receiving-form">
+                <div class="form-group">
+                    <label>Поставщик</label>
+                    <select required>
+                        <option value="">Выберите поставщика</option>
+                        <option>ООО "Техноснаб"</option>
+                        <option>ИП Петров</option>
+                        <option>АО "Логистик"</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Номер накладной</label>
+                    <input type="text" required>
+                </div>
+                <div class="form-group">
+                    <label>Товары</label>
+                    <div id="receiving-items">
+                        <div class="item-row">
+                            <input type="text" placeholder="Артикул" class="item-sku-input">
+                            <input type="number" placeholder="Количество" class="item-qty-input">
+                            <button type="button" class="btn-remove">×</button>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-sm" onclick="addReceivingItem()">+ Добавить товар</button>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Создать поставку</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="product-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('product-modal')">&times;</span>
+            <h3>Добавить товар</h3>
+            <form id="product-form">
+                <div class="form-group">
+                    <label>Артикул (SKU)</label>
+                    <input type="text" id="product-sku" required>
+                </div>
+                <div class="form-group">
+                    <label>Название</label>
+                    <input type="text" id="product-name" required>
+                </div>
+                <div class="form-group">
+                    <label>Категория</label>
+                    <select id="product-category">
+                        <option>Электроника</option>
+                        <option>Одежда</option>
+                        <option>Дом и сад</option>
+                        <option>Спорт</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Количество</label>
+                    <input type="number" id="product-qty" min="0" value="0">
+                </div>
+                <div class="form-group">
+                    <label>Ячейка хранения</label>
+                    <select id="product-cell">
+                        <option value="">Выберите ячейку</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Добавить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="order-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('order-modal')">&times;</span>
+            <h3>Новый заказ</h3>
+            <form id="order-form">
+                <div class="form-group">
+                    <label>Клиент</label>
+                    <input type="text" required>
+                </div>
+                <div class="form-group">
+                    <label>Приоритет</label>
+                    <select>
+                        <option>Обычный</option>
+                        <option>Высокий</option>
+                        <option>Срочный</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Товары</label>
+                    <div id="order-items">
+                        <div class="item-row">
+                            <select class="order-product-select">
+                                <option value="">Выберите товар</option>
+                            </select>
+                            <input type="number" placeholder="Кол-во" min="1" value="1">
+                            <button type="button" class="btn-remove">×</button>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-sm" onclick="addOrderItem()">+ Добавить товар</button>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Создать заказ</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
 </body>
 </html>
