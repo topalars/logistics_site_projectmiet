@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="WMS - Система управления складом">
+    <meta name="theme-color" content="#1a56db">
+    <title>WMS Pro | Система управления складом</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+                        <polyline points="9,22 9,12 15,12 15,22"/>
+                    </svg>
+                    <span class="logo-text">WMS Pro</span>
+                </div>
+                <button class="sidebar-toggle" id="sidebarToggle" aria-label="Меню">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="3" y1="12" x2="21" y2="12"/>
+                        <line x1="3" y1="6" x2="21" y2="6"/>
+                        <line x1="3" y1="18" x2="21" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" data-page="dashboard">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7"/>
+                        <rect x="14" y="3" width="7" height="7"/>
+                        <rect x="14" y="14" width="7" height="7"/>
+                        <rect x="3" y="14" width="7" height="7"/>
+                    </svg>
+                    <span>Дашборд</span>
+                </a>
+                <a href="#" class="nav-item" data-page="receiving">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+                        <polyline points="7,10 12,15 17,10"/>
+                        <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                    <span>Приёмка</span>
+                </a>
+                <a href="#" class="nav-item" data-page="storage">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 3h18v18H3zM9 3v18M15 3v18M3 9h18M3 15h18"/>
+                    </svg>
+                    <span>Хранение</span>
+                </a>
+                <a href="#" class="nav-item" data-page="picking">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="9" cy="21" r="1"/>
+                        <circle cx="20" cy="21" r="1"/>
+                        <path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/>
+                    </svg>
+                    <span>Комплектация</span>
+                </a>
+                <a href="#" class="nav-item" data-page="shipping">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="1" y="3" width="15" height="13"/>
+                        <polygon points="16,8 20,8 23,11 23,16 16,16 16,8"/>
+                        <circle cx="5.5" cy="18.5" r="2.5"/>
+                        <circle cx="18.5" cy="18.5" r="2.5"/>
+                    </svg>
+                    <span>Отгрузка</span>
+                </a>
+                <a href="#" class="nav-item" data-page="inventory">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                        <polyline points="14,2 14,8 20,8"/>
+                        <line x1="16" y1="13" x2="8" y2="13"/>
+                        <line x1="16" y1="17" x2="8" y2="17"/>
+                    </svg>
+                    <span>Инвентаризация</span>
+                </a>
+                <a href="#" class="nav-item" data-page="analytics">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="20" x2="18" y2="10"/>
+                        <line x1="12" y1="20" x2="12" y2="4"/>
+                        <line x1="6" y1="20" x2="6" y2="14"/>
+                    </svg>
+                    <span>Аналитика</span>
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar">АД</div>
+                    <div class="user-details">
+                        <div class="user-name">Администратор</div>
+                        <div class="user-role">Склад №1</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-left">
+                    <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Меню">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="3" y1="12" x2="21" y2="12"/>
+                            <line x1="3" y1="6" x2="21" y2="6"/>
+                            <line x1="3" y1="18" x2="21" y2="18"/>
+                        </svg>
+                    </button>
+                    <h1 class="page-title" id="pageTitle">Дашборд</h1>
+                </div>
+                <div class="header-right">
+                    <div class="search-box">
+                        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"/>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                        </svg>
+                        <input type="text" placeholder="Поиск товаров, заказов..." class="search-input" id="globalSearch">
+                    </div>
+                    <button class="notification-btn" id="notificationBtn" aria-label="Уведомления">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                            <path d="M13.73 21a2 2 0 01-3.46 0"/>
+                        </svg>
+                        <span class="notification-badge">3</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Page Content -->
+            <div class="page-container" id="pageContainer">
+                <!-- Dashboard Page -->
+                <div class="page active" id="dashboardPage">
+                    <!-- KPI Cards -->
+                    <div class="kpi-grid">
+                        <div class="kpi-card">
+                            <div class="kpi-icon kpi-icon-blue">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+                                    <polyline points="7,10 12,15 17,10"/>
+                                    <line x1="12" y1="15" x2="12" y2="3"/>
+                                </svg>
+                            </div>
+                            <div class="kpi-content">
+                                <div class="kpi-value">142</div>
+                                <div class="kpi-label">Приёмка сегодня</div>
+                                <div class="kpi-trend positive">+12% к вчера</div>
+                            </div>
+                        </div>
+                        
+                        <div class="kpi-card">
+                            <div class="kpi-icon kpi-icon-green">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="9" cy="21" r="1"/>
+                                    <circle cx="20" cy="21" r="1"/>
+                                    <path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/>
+                                </svg>
+                            </div>
+                            <div class="kpi-content">
+                                <div class="kpi-value">89</div>
+                                <div class="kpi-label">Заказов в работе</div>
+                                <div class="kpi-trend positive">+8% к вчера</div>
+                            </div>
+                        </div>
+                        
+                        <div class="kpi-card">
+                            <div class="kpi-icon kpi-icon-purple">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="1" y="3" width="15" height="13"/>
+                                    <polygon points="16,8 20,8 23,11 23,16 16,16 16,8"/>
+                                    <circle cx="5.5" cy="18.5" r="2.5"/>
+                                    <circle cx="18.5" cy="18.5" r="2.5"/>
+                                </svg>
+                            </div>
+                            <div class="kpi-content">
+                                <div class="kpi-value">256</div>
+                                <div class="kpi-label">Отгружено</div>
+                                <div class="kpi-trend positive">+15% к вчера</div>
+                            </div>
+                        </div>
+                        
+                        <div class="kpi-card">
+                            <div class="kpi-icon kpi-icon-orange">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M3 3h18v18H3zM9 3v18M15 3v18M3 9h18M3 15h18"/>
+                                </svg>
+                            </div>
+                            <div class="kpi-content">
+                                <div class="kpi-value">94.2%</div>
+                                <div class="kpi-label">Заполненность склада</div>
+                                <div class="kpi-trend neutral">12,450 / 13,200 мест</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Charts and Tables -->
+                    <div class="dashboard-grid">
+                        <div class="card chart-card">
+                            <div class="card-header">
+                                <h3 class="card-title">Динамика операций</h3>
+                                <select class="period-select">
+                                    <option value="today">Сегодня</option>
+                                    <option value="week">Неделя</option>
+                                    <option value="month">Месяц</option>
+                                </select>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="operationsChart"></canvas>
+                            </div>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Активные задачи</h3>
+                                <button class="btn btn-sm btn-primary">Все задачи</button>
+                            </div>
+                            <div class="task-list">
+                                <div class="task-item">
+                                    <div class="task-priority high"></div>
+                                    <div class="task-content">
+                                        <div class="task-title">Приёмка поставки #П-2024-1542</div>
+                                        <div class="task-meta">Зона B • 45 коробов • Ожидается через 15 мин</div>
+                                    </div>
+                                    <div class="task-status status-pending">Ожидание</div>
+                                </div>
+                                <div class="task-item">
+                                    <div class="task-priority medium"></div>
+                                    <div class="task-content">
+                                        <div class="task-title">Комплектация заказа #З-789456</div>
+                                        <div class="task-meta">Зона A • 12 позиций • Срок: 14:00</div>
+                                    </div>
+                                    <div class="task-status status-progress">В работе</div>
+                                </div>
+                                <div class="task-item">
+                                    <div class="task-priority low"></div>
+                                    <div class="task-content">
+                                        <div class="task-title">Инвентаризация зоны C</div>
+                                        <div class="task-meta">Зона C • План: 200 мест • Выполнено: 156</div>
+                                    </div>
+                                    <div class="task-status status-progress">В работе</div>
+                                </div>
+                                <div class="task-item">
+                                    <div class="task-priority high"></div>
+                                    <div class="task-content">
+                                        <div class="task-title">Срочная отгрузка #О-321654</div>
+                                        <div class="task-meta">Зона D • 8 позиций • Срок: 12:30</div>
+                                    </div>
+                                    <div class="task-status status-urgent">Срочно</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Последние операции</h3>
+                            <button class="btn btn-sm btn-outline">Экспорт</button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Время</th>
+                                        <th>Тип</th>
+                                        <th>Документ</th>
+                                        <th>Товар</th>
+                                        <th>Кол-во</th>
+                                        <th>Статус</th>
+                                        <th>Исполнитель</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>11:45</td>
+                                        <td><span class="badge badge-blue">Приёмка</span></td>
+                                        <td>#П-2024-1541</td>
+                                        <td>Ноутбук ASUS X515</td>
+                                        <td>25 шт</td>
+                                        <td><span class="status-badge status-success">Завершено</span></td>
+                                        <td>Иванов А.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>11:32</td>
+                                        <td><span class="badge badge-green">Комплектация</span></td>
+                                        <td>#З-789455</td>
+                                        <td>Мышь Logitech M185</td>
+                                        <td>50 шт</td>
+                                        <td><span class="status-badge status-success">Завершено</span></td>
+                                        <td>Петров С.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>11:18</td>
+                                        <td><span class="badge badge-purple">Отгрузка</span></td>
+                                        <td>#О-321653</td>
+                                        <td>Клавиатура Keychron K2</td>
+                                        <td>15 шт</td>
+                                        <td><span class="status-badge status-warning">В пути</span></td>
+                                        <td>Сидоров М.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>10:55</td>
+                                        <td><span class="badge badge-orange">Перемещение</span></td>
+                                        <td>#ПР-4567</td>
+                                        <td>Монитор Samsung 24"</td>
+                                        <td>30 шт</td>
+                                        <td><span class="status-badge status-success">Завершено</span></td>
+                                        <td>Козлов Д.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>10:42</td>
+                                        <td><span class="badge badge-blue">Приёмка</span></td>
+                                        <td>#П-2024-1540</td>
+                                        <td>Наушники Sony WH-1000XM4</td>
+                                        <td>40 шт</td>
+                                        <td><span class="status-badge status-error">Проблема</span></td>
+                                        <td>Иванов А.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Receiving Page -->
+                <div class="page" id="receivingPage">
+                    <div class="page-actions">
+                        <button class="btn btn-primary" id="newReceivingBtn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="12" y1="5" x2="12" y2="19"/>
+                                <line x1="5" y1="12" x2="19" y2="12"/>
+                            </svg>
+                            Новая приёмка
+                        </button>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Поступления</h3>
+                            <div class="filter-group">
+                                <select class="filter-select">
+                                    <option value="all">Все статусы</option>
+                                    <option value="pending">Ожидаются</option>
+                                    <option value="in_progress">В процессе</option>
+                                    <option value="completed">Завершены</option>
+                                </select>
+                                <input type="date" class="filter-date">
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>№ документа</th>
+                                        <th>Поставщик</th>
+                                        <th>Дата/время</th>
+                                        <th>Позиций</th>
+                                        <th>Кол-во</th>
+                                        <th>Статус</th>
+                                        <th>Действия</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>#П-2024-1542</strong></td>
+                                        <td>ООО "Техноснаб"</td>
+                                        <td>Сегодня, 12:00</td>
+                                        <td>45</td>
+                                        <td>1,250 шт</td>
+                                        <td><span class="status-badge status-pending">Ожидается</span></td>
+                                        <td>
+                                            <button class="btn-icon" title="Начать приёмку">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <polyline points="9,18 15,12 9,6"/>
+                                                </svg>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>#П-2024-1541</strong></td>
+                                        <td>АО "Электроника Плюс"</td>
+                                        <td>Сегодня, 10:30</td>
+                                        <td>25</td>
+                                        <td>850 шт</td>
+                                        <td><span class="status-badge status-in-progress">В процессе</span></td>
+                                        <td>
+                                            <button class="btn-icon" title="Продолжить">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <polygon points="5,3 19,12 5,21"/>
+                                                </svg>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>#П-2024-1540</strong></td>
+                                        <td>ИП Смирнов</td>
+                                        <td>Сегодня, 09:15</td>
+                                        <td>40</td>
+                                        <td>320 шт</td>
+                                        <td><span class="status-badge status-error">Проблема</span></td>
+                                        <td>
+                                            <button class="btn-icon" title="Просмотреть">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                                    <circle cx="12" cy="12" r="3"/>
+                                                </svg>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Storage Page -->
+                <div class="page" id="storagePage">
+                    <div class="storage-controls">
+                        <div class="zone-filter">
+                            <button class="zone-btn active" data-zone="all">Все зоны</button>
+                            <button class="zone-btn" data-zone="A">Зона A</button>
+                            <button class="zone-btn" data-zone="B">Зона B</button>
+                            <button class="zone-btn" data-zone="C">Зона C</button>
+                            <button class="zone-btn" data-zone="D">Зона D</button>
+                        </div>
+                        <div class="view-toggle">
+                            <button class="view-btn active" data-view="grid">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="3" width="7" height="7"/>
+                                    <rect x="14" y="3" width="7" height="7"/>
+                                    <rect x="14" y="14" width="7" height="7"/>
+                                    <rect x="3" y="14" width="7" height="7"/>
+                                </svg>
+                            </button>
+                            <button class="view-btn" data-view="list">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="8" y1="6" x2="21" y2="6"/>
+                                    <line x1="8" y1="12" x2="21" y2="12"/>
+                                    <line x1="8" y1="18" x2="21" y2="18"/>
+                                    <line x1="3" y1="6" x2="3.01" y2="6"/>
+                                    <line x1="3" y1="12" x2="3.01" y2="12"/>
+                                    <line x1="3" y1="18" x2="3.01" y2="18"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="warehouse-map" id="warehouseMap">
+                        <!-- Generated by JS -->
+                    </div>
+                </div>
+
+                <!-- Picking Page -->
+                <div class="page" id="pickingPage">
+                    <div class="page-actions">
+                        <button class="btn btn-primary" id="newPickingBtn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="12" y1="5" x2="12" y2="19"/>
+                                <line x1="5" y1="12" x2="19" y2="12"/>
+                            </svg>
+                            Новый заказ
+                        </button>
+                    </div>
+                    
+                    <div class="kanban-board" id="pickingBoard">
+                        <div class="kanban-column">
+                            <div class="kanban-header status-new">
+                                <h4>Новые</h4>
+                                <span class="kanban-count">12</span>
+                            </div>
+                            <div class="kanban-cards">
+                                <div class="kanban-card">
+                                    <div class="card-number">#З-789460</div>
+                                    <div class="card-priority high">Высокий</div>
+                                    <div class="card-items">8 позиций</div>
+                                    <div class="card-deadline">Срок: 15:00</div>
+                                    <div class="card-zone">Зона A</div>
+                                </div>
+                                <div class="kanban-card">
+                                    <div class="card-number">#З-789459</div>
+                                    <div class="card-priority medium">Средний</div>
+                                    <div class="card-items">15 позиций</div>
+                                    <div class="card-deadline">Срок: 16:30</div>
+                                    <div class="card-zone">Зона B</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="kanban-column">
+                            <div class="kanban-header status-progress">
+                                <h4>В работе</h4>
+                                <span class="kanban-count">5</span>
+                            </div>
+                            <div class="kanban-cards">
+                                <div class="kanban-card">
+                                    <div class="card-number">#З-789458</div>
+                                    <div class="card-priority high">Высокий</div>
+                                    <div class="card-items">6 позиций</div>
+                                    <div class="card-progress">
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: 67%"></div>
+                                        </div>
+                                        <span>4/6</span>
+                                    </div>
+                                    <div class="card-worker">Иванов А.</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="kanban-column">
+                            <div class="kanban-header status-review">
+                                <h4>На проверке</h4>
+                                <span class="kanban-count">3</span>
+                            </div>
+                            <div class="kanban-cards">
+                                <div class="kanban-card">
+                                    <div class="card-number">#З-789457</div>
+                                    <div class="card-priority low">Низкий</div>
+                                    <div class="card-items">20 позиций</div>
+                                    <div class="card-checker">Петров С.</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="kanban-column">
+                            <div class="kanban-header status-done">
+                                <h4>Готовы</h4>
+                                <span class="kanban-count">24</span>
+                            </div>
+                            <div class="kanban-cards">
+                                <div class="kanban-card">
+                                    <div class="card-number">#З-789456</div>
+                                    <div class="card-priority medium">Средний</div>
+                                    <div class="card-items">12 позиций</div>
+                                    <div class="card-time">Готов в 11:32</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Shipping Page -->
+                <div class="page" id="shippingPage">
+                    <div class="page-actions">
+                        <button class="btn btn-primary" id="newShippingBtn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="12" y1="5" x2="12" y2="19"/>
+                                <line x1="5" y1="12" x2="19" y2="12"/>
+                            </svg>
+                            Новая отгрузка
+                        </button>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Отгрузки</h3>
+                            <div class="filter-group">
+                                <select class="filter-select">
+                                    <option value="all">Все перевозчики</option>
+                                    <option value="cdek">СДЭК</option>
+                                    <option value="boxberry">Boxberry</option>
+                                    <option value="pochta">Почта России</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>№ отгрузки</th>
+                                        <th>Заказ</th>
+                                        <th>Перевозчик</th>
+                                        <th>Направление</th>
+                                        <th>Мест</th>
+                                        <th>Вес</th>
+                                        <th>Статус</th>
+                                        <th>Действия</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>#О-321655</strong></td>
+                                        <td>#З-789460</td>
+                                        <td>СДЭК</td>
+                                        <td>Москва</td>
+                                        <td>2</td>
+                                        <td>4.5 кг</td>
+                                        <td><span class="status-badge status-pending">Ожидает</span></td>
+                                        <td>
+                                            <button class="btn-icon" title="Оформить">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <polyline points="20,6 9,17 4,12"/>
+                                                </svg>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>#О-321654</strong></td>
+                                        <td>#З-789459</td>
+                                        <td>Boxberry</td>
+                                        <td>Санкт-Петербург</td>
+                                        <td>1</td>
+                                        <td>2.1 кг</td>
+                                        <td><span class="status-badge status-in-progress">В пути</span></td>
+                                        <td>
+                                            <button class="btn-icon" title="Трекинг">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <circle cx="12" cy="12" r="10"/>
+                                                    <polygon points="16.24,7.76 14.12,14.12 7.76,16.24 9.88,9.88 16.24,7.76"/>
+                                                </svg>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Inventory Page -->
+                <div class="page" id="inventoryPage">
+                    <div class="page-actions">
+                        <button class="btn btn-primary" id="newInventoryBtn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="12" y1="5" x2="12" y2="19"/>
+                                <line x1="5" y1="12" x2="19" y2="12"/>
+                            </svg>
+                            Новая инвентаризация
+                        </button>
+                    </div>
+                    
+                    <div class="inventory-summary">
+                        <div class="summary-card">
+                            <div class="summary-value">12,450</div>
+                            <div class="summary-label">Всего мест</div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-value">11,732</div>
+                            <div class="summary-label">Проверено</div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-value">94.2%</div>
+                            <div class="summary-label">Выполнение</div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-value text-orange">23</div>
+                            <div class="summary-label">Расхождения</div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Активные инвентаризации</h3>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>№</th>
+                                        <th>Зона</th>
+                                        <th>Ответственный</th>
+                                        <th>Начало</th>
+                                        <th>План мест</th>
+                                        <th>Проверено</th>
+                                        <th>Прогресс</th>
+                                        <th>Статус</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>#ИНВ-2024-089</strong></td>
+                                        <td>Зона C</td>
+                                        <td>Козлов Д.</td>
+                                        <td>Сегодня, 08:00</td>
+                                        <td>200</td>
+                                        <td>156</td>
+                                        <td>
+                                            <div class="progress-bar">
+                                                <div class="progress-fill" style="width: 78%"></div>
+                                            </div>
+                                        </td>
+                                        <td><span class="status-badge status-in-progress">В процессе</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Analytics Page -->
+                <div class="page" id="analyticsPage">
+                    <div class="analytics-filters">
+                        <select class="filter-select">
+                            <option value="today">Сегодня</option>
+                            <option value="week" selected>Неделя</option>
+                            <option value="month">Месяц</option>
+                            <option value="year">Год</option>
+                        </select>
+                    </div>
+                    
+                    <div class="analytics-grid">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Производительность</h3>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="productivityChart"></canvas>
+                            </div>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Статус заказов</h3>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="ordersChart"></canvas>
+                            </div>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Топ товаров</h3>
+                            </div>
+                            <div class="top-items">
+                                <div class="top-item">
+                                    <span class="top-rank">1</span>
+                                    <div class="top-info">
+                                        <div class="top-name">Ноутбук ASUS X515</div>
+                                        <div class="top-value">1,245 операций</div>
+                                    </div>
+                                </div>
+                                <div class="top-item">
+                                    <span class="top-rank">2</span>
+                                    <div class="top-info">
+                                        <div class="top-name">Мышь Logitech M185</div>
+                                        <div class="top-value">987 операций</div>
+                                    </div>
+                                </div>
+                                <div class="top-item">
+                                    <span class="top-rank">3</span>
+                                    <div class="top-info">
+                                        <div class="top-name">Клавиатура Keychron K2</div>
+                                        <div class="top-value">756 операций</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal" id="modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Заголовок</h3>
+                <button class="modal-close" id="modalClose" aria-label="Закрыть">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Dynamic content -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>
